@@ -1,0 +1,76 @@
+| package |
+package := Package name: 'Slick'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #AbstractImageMatcherShell;
+	add: #CvImageMatcherShell;
+	add: #RecorderTestCase;
+	add: #ScreenAreaGrabber;
+	add: #VictorImageMatcherShell;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: (IdentitySet new
+	add: 'AutoItX3Lib';
+	add: '..\..\Core\Contributions\ITC Gorisek\Dialect Abstraction Layer';
+	add: '..\..\Core\Object Arts\Dolphin\Base\Dolphin';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Dialogs\Common\Dolphin Common Dialogs';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Presenters\Image\Dolphin Image Presenter';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Presenters\Number\Dolphin Number Presenter';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Views\Slider\Dolphin Slider Control';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models';
+	add: '..\..\Core\Object Arts\Dolphin\IDE\Base\Internal Bitmaps and Icons';
+	add: 'OpenCV';
+	add: '..\..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
+	add: 'Victor Image Processing';
+	add: '..\..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell';
+	yourself).
+
+package!
+
+"Class Definitions"!
+
+Shell subclass: #AbstractImageMatcherShell
+	instanceVariableNames: 'matchImage matchImagePresenter matchTimePresenter sourceImage sourceImagePresenter confidencePresenter scalePresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+AbstractImageMatcherShell subclass: #CvImageMatcherShell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+AbstractImageMatcherShell subclass: #VictorImageMatcherShell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TestCase subclass: #RecorderTestCase
+	instanceVariableNames: 'autoIt'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ShellView subclass: #ScreenAreaGrabber
+	instanceVariableNames: 'tracker startPoint trackBitmap trackPoint done answer'
+	classVariableNames: ''
+	poolDictionaries: 'Win32Constants'
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+"End of package definition"!
+

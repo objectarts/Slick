@@ -1,0 +1,44 @@
+| package |
+package := Package name: 'AutoItX3Lib'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #IAutoItX3;
+	yourself.
+
+package globalNames
+	add: #AutoItX3Lib;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	add: #AutoItX3Lib;
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: (IdentitySet new
+	add: '..\..\Core\Object Arts\Dolphin\ActiveX\Automation\ActiveX Automation';
+	add: '..\..\Core\Object Arts\Dolphin\Base\Dolphin';
+	add: '..\..\Core\Object Arts\Dolphin\ActiveX\COM\OLE COM';
+	yourself).
+
+package!
+
+"Class Definitions"!
+
+IDispatch subclass: #IAutoItX3
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+"End of package definition"!
+

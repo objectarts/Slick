@@ -1,0 +1,138 @@
+| package |
+package := Package name: 'OpenCV'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #CvImageMatcher;
+	add: #CvMat;
+	add: #CvPoint;
+	add: #CvRect;
+	add: #CvScalar;
+	add: #CvSize;
+	add: #IplImage;
+	add: #OpenCVCoreLibrary;
+	add: #OpenCVHighGuiLibrary;
+	add: #OpenCVImgProcLibrary;
+	add: #OpenCVLibraryAbstract;
+	yourself.
+
+package methodNames
+	add: #GDILibrary -> #createDIBitmap:bmih:init:data:bmi:usage:;
+	add: #Point -> #asCvPoint;
+	add: #Point -> #asCvSize;
+	yourself.
+
+package globalNames
+	add: #OpenCVConstants;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: (IdentitySet new
+	add: '..\..\Core\Object Arts\Dolphin\Base\Dolphin';
+	add: '..\..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
+	yourself).
+
+package!
+
+"Class Definitions"!
+
+Object subclass: #CvImageMatcher
+	instanceVariableNames: 'matches scale'
+	classVariableNames: ''
+	poolDictionaries: 'OpenCVConstants'
+	classInstanceVariableNames: ''!
+ExternalLibrary subclass: #OpenCVLibraryAbstract
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+OpenCVLibraryAbstract subclass: #OpenCVCoreLibrary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+OpenCVLibraryAbstract subclass: #OpenCVHighGuiLibrary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+OpenCVLibraryAbstract subclass: #OpenCVImgProcLibrary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ExternalStructure subclass: #CvMat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'OpenCVConstants Win32Constants'
+	classInstanceVariableNames: ''!
+ExternalStructure subclass: #CvRect
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ExternalStructure subclass: #CvScalar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ExternalStructure subclass: #IplImage
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+POINTL subclass: #CvPoint
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+POINTL subclass: #CvSize
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+!GDILibrary methodsFor!
+
+createDIBitmap: hdc bmih: bmih init: init data: data bmi: bmi  usage: usage
+	"
+		HBITMAP __stdcall CreateDIBitmap(
+			HDC HDC,
+			BITMAPINFOHEADER* lpbmih,
+			DWORD dwInit
+			const VOID *lbpData
+			const BITMAPINFO* lpbmi
+			DWORD usage);"
+
+	<stdcall: handle CreateDIBitmap handle BITMAPINFOHEADER* dword lpvoid BITMAPINFO* dword>
+	^self invalidCall! !
+!GDILibrary categoriesFor: #createDIBitmap:bmih:init:data:bmi:usage:!**auto generated**!public!win32 functions-bitmap! !
+
+!Point methodsFor!
+
+asCvPoint
+	"Answer the receiver in a form suitable for passing to an external function."
+
+	^CvPoint fromPoint: self!
+
+asCvSize
+	"Answer the receiver in a form suitable for passing to an external function."
+
+	^CvSize fromPoint: self! !
+!Point categoriesFor: #asCvPoint!converting!public! !
+!Point categoriesFor: #asCvSize!converting!public! !
+
+"End of package definition"!
+
