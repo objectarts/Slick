@@ -26,11 +26,15 @@ autoIt
 	^autoIt!
 
 click: anImage
+	^self click: anImage offset: 0
+!
+
+click: anImage offset: aPoint
 	(self wait: anImage)
 		ifNotNil: 
 			[:match| | rect pt |
 			rect := match value.
-			pt := rect center+self activeWindowRect topLeft.
+			pt := rect center+self activeWindowRect topLeft + aPoint asPoint.
 			self autoIt
 				mouseClick: 'primary'
 				nX: pt x
@@ -39,11 +43,24 @@ click: anImage
 				nSpeed: 10]
 !
 
+closeBrowserTab
+	self click: #BrowserCloseTab offset: -10 @ 0.
+	Processor sleep: 100.
+	!
+
 defaultMatchScale
 	^0.5!
 
 defaultTimeout
 	^5000!
+
+find: anImage
+	| sourceImage matchImage timeoutTime |
+	sourceImage := self activeWindowImage.
+	matchImage := self loadImage: anImage.
+	(self find: matchImage in: sourceImage) ifNotNil: [:match | ^match].
+	SessionManager inputState pumpMessages.
+	^nil!
 
 find: matchImage in: sourceImage
 	| ms result |
@@ -51,9 +68,6 @@ find: matchImage in: sourceImage
 					[result := (self imageMatcherClass new)
 								scale: self defaultMatchScale;
 								goodMatchFor: matchImage in: sourceImage].
-	Transcript
-		show: ('match time <1d>ms' expandMacrosWith: ms);
-		cr.
 	^result!
 
 grabScreenImageInRect: aRectangle
@@ -68,8 +82,9 @@ imageMatcherClass
 
 loadImage: anImageSymbol
 	| filename |
-	filename := File composePath: 'images' stem: anImageSymbol asString extension: 'png'.
-	^self imageClass loadImage: filename!
+	filename := self class fullPathForImage: anImageSymbol.
+	(self imageClass loadImage: filename) ifNotNil: [:image | ^image].
+	self error: 'Can''t find image file: ' , filename!
 
 openUrl: aString
 	ShellLibrary default shellOpen: aString.
@@ -78,35 +93,16 @@ openUrl: aString
 setWindowSize: anXY
 	self activeWindow extent: anXY!
 
-testGoogle
-	"
-	ScreenAreaGrabber grabPngSymbolToClipboard.
-	"
-
-	self openUrl: 'http://google.com'.
-	self wait: #img20170206110556872.
-	self click: #img20170206110622907.
-	self type: 'object arts{ENTER}'.
-	self click: #img20170206111043180.
-	self wait: #img20170206111128731.
-	self click: #img20170206131313380.
-!
-
-testOne
-	"
-	ScreenAreaGrabber grabPngSymbolToClipboard.
-	"
-	"self openUrl: 'http://object-arts.com'.
-
-	self wait: #img20170203221057855.
-	self click: #img20170203215601556."!
-
 type: aString
 	self autoIt send: aString!
 
 wait: anImage
-	| sourceImage matchImage |
-	10 timesRepeat: 
+	^self wait: anImage timeout: self defaultTimeout!
+
+wait: anImage timeout: timeoutMilliseconds
+	| sourceImage matchImage timeoutTime |
+	timeoutTime := TimeStamp current asMilliseconds + timeoutMilliseconds.
+	[TimeStamp current asMilliseconds < timeoutTime] whileTrue: 
 			[sourceImage := self activeWindowImage.
 			matchImage := self loadImage: anImage.
 			(self find: matchImage in: sourceImage) ifNotNil: [:match | ^match].
@@ -121,8 +117,11 @@ waitActiveTitle: aString
 !RecorderTestCase categoriesFor: #activeWindowRect!public! !
 !RecorderTestCase categoriesFor: #autoIt!private! !
 !RecorderTestCase categoriesFor: #click:!public! !
+!RecorderTestCase categoriesFor: #click:offset:!public! !
+!RecorderTestCase categoriesFor: #closeBrowserTab!public! !
 !RecorderTestCase categoriesFor: #defaultMatchScale!public! !
 !RecorderTestCase categoriesFor: #defaultTimeout!constants!public! !
+!RecorderTestCase categoriesFor: #find:!public! !
 !RecorderTestCase categoriesFor: #find:in:!private! !
 !RecorderTestCase categoriesFor: #grabScreenImageInRect:!private! !
 !RecorderTestCase categoriesFor: #imageClass!private! !
@@ -130,9 +129,40 @@ waitActiveTitle: aString
 !RecorderTestCase categoriesFor: #loadImage:!private! !
 !RecorderTestCase categoriesFor: #openUrl:!public! !
 !RecorderTestCase categoriesFor: #setWindowSize:!public! !
-!RecorderTestCase categoriesFor: #testGoogle!public! !
-!RecorderTestCase categoriesFor: #testOne!public! !
 !RecorderTestCase categoriesFor: #type:!public! !
 !RecorderTestCase categoriesFor: #wait:!public! !
+!RecorderTestCase categoriesFor: #wait:timeout:!public! !
 !RecorderTestCase categoriesFor: #waitActiveTitle:!public! !
+
+!RecorderTestCase class methodsFor!
+
+fullPathForImage: aFilenameString
+	| filename |
+	filename := File
+				composePath: 'images'
+				stem: aFilenameString asString
+				extension: 'png'.
+	^(PackageRelativeFileLocator package: self class owningPackage) localFileSpecFor: filename!
+
+getFilenameForImage
+	^Prompter
+		on: 'img' , (Timestamp current asFilenameString copyWithout: $-)
+		prompt: 'Image name:'
+		caption: 'Enter a name for this image'!
+
+grabPngSymbolToClipboard
+	"
+	self grabPngSymbolToClipboard
+	"
+
+	| image filename |
+	image := ScreenAreaGrabber grabImage.
+	image ifNil: [^nil].
+	filename := self getFilenameForImage.
+	filename ifNil: [^nil].
+	image saveImage: (self fullPathForImage:  filename).
+	^('#' , (File splitStemFrom: filename)) copyToClipboard! !
+!RecorderTestCase class categoriesFor: #fullPathForImage:!private! !
+!RecorderTestCase class categoriesFor: #getFilenameForImage!private! !
+!RecorderTestCase class categoriesFor: #grabPngSymbolToClipboard!public! !
 

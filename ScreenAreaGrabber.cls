@@ -76,8 +76,9 @@ onKeyTyped: aKeyEvent
 	aKeyEvent code = VK_ESCAPE ifTrue: [self answer: nil].!
 
 onLeftButtonPressed: aMouseEvent
-	startPoint := aMouseEvent screenPosition.
-	tracker := MouseTracker forPresenter: self startingAt: aMouseEvent screenPosition.
+	startPoint := aMouseEvent position.
+Transcript show: startPoint displayString; cr.
+	tracker := MouseTracker forPresenter: self startingAt: aMouseEvent position.
 	tracker startTracking: self!
 
 runModalInProcessLoop
@@ -94,10 +95,9 @@ runModalInProcessLoop
 screenBitmapInRect: aRectangle
 	^self class screenBitmapInRect: aRectangle!
 
-startTrackingAt: aPoint 
-	self drawTrackingAt: aPoint .
-	^aPoint
-! !
+startTrackingAt: aPoint
+	self drawTrackingAt: aPoint.
+	^aPoint! !
 !ScreenAreaGrabber categoriesFor: #answer:!private!tracking! !
 !ScreenAreaGrabber categoriesFor: #cancelTrackingAt:!private!tracking! !
 !ScreenAreaGrabber categoriesFor: #continueTrackingAt:from:!event handling!private!tracking! !
@@ -121,32 +121,11 @@ cursor
 	^Cursor cross!
 
 grabBitmap
-	^self show runModalInProcessLoop!
+	^(self show)
+		runModalInProcessLoop!
 
 grabImage
 	^self grabBitmap ifNotNil: [:bitmap | self imageClass fromBitmap: bitmap]!
-
-grabPng
-	"
-	self grabPng copyToClipboard
-	"
-
-	^self grabPng: (File composePath: 'images'
-				subPath: 'img' , (Timestamp current asFilenameString copyWithout: $-))!
-
-grabPng: aFilename
-	^self grabImage
-		ifNotNil: 
-			[:img || fullPath |
-			fullPath := (File default: aFilename extension: 'png').
-			img saveImage: fullPath. fullPath ]!
-
-grabPngSymbolToClipboard
-	"
-	self grabPngSymbolToClipboard
-	"
-
-	^self grabPng ifNotNil: [:filename | ('#' , (File splitStemFrom: filename)) copyToClipboard]!
 
 imageClass
 	^CvMat!
@@ -163,9 +142,6 @@ screenBitmapInRect: aRectangle
 !ScreenAreaGrabber class categoriesFor: #cursor!accessing!public! !
 !ScreenAreaGrabber class categoriesFor: #grabBitmap!public! !
 !ScreenAreaGrabber class categoriesFor: #grabImage!public! !
-!ScreenAreaGrabber class categoriesFor: #grabPng!public! !
-!ScreenAreaGrabber class categoriesFor: #grabPng:!public! !
-!ScreenAreaGrabber class categoriesFor: #grabPngSymbolToClipboard!public! !
 !ScreenAreaGrabber class categoriesFor: #imageClass!private! !
 !ScreenAreaGrabber class categoriesFor: #screenBitmapInRect:!public! !
 

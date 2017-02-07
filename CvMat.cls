@@ -289,6 +289,7 @@ initialize
 loadImage: aFilename
 	| newOne |
 	newOne := OpenCVHighGuiLibrary default cvLoadImageM: aFilename iscolor: CV_LOAD_IMAGE_UNCHANGED.
+	newOne isNull ifTrue: [^nil].
 	^newOne initialize!
 
 onStartup
