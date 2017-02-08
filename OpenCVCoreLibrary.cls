@@ -58,6 +58,12 @@ cvRectangle: img pt1: pt1 pt2: pt2 color: color thickness: thickness lineType: l
 	<cdecl: void cvRectangle CvMat* CvPoint CvPoint CvScalar sdword sdword sdword>
 	^self invalidCall!
 
+cvRectangleR: img rect: rect color: color thickness: thickness lineType: lineType shift: shift
+	"void cvRectangle(CvArr* img, CvPoint pt1, CvPoint pt2, CvScalar color, int thickness=1, int line_type=8, int shift=0 )"
+
+	<cdecl: void cvRectangleR CvMat* CvRect CvScalar sdword sdword sdword>
+	^self invalidCall!
+
 cvReleaseData: arr
 	"void cvReleaseData(CvArr* arr)"
 
@@ -83,6 +89,7 @@ cvReleaseMat: mat
 !OpenCVCoreLibrary categoriesFor: #cvMinMaxLoc:minVal:maxVal:minLoc:maxLoc:mask:!public! !
 !OpenCVCoreLibrary categoriesFor: #cvNormalize:dst:alpha:beta:normType:!public! !
 !OpenCVCoreLibrary categoriesFor: #cvRectangle:pt1:pt2:color:thickness:lineType:shift:!public! !
+!OpenCVCoreLibrary categoriesFor: #cvRectangleR:rect:color:thickness:lineType:shift:!public! !
 !OpenCVCoreLibrary categoriesFor: #cvReleaseData:!public! !
 !OpenCVCoreLibrary categoriesFor: #cvReleaseImage:!public! !
 !OpenCVCoreLibrary categoriesFor: #cvReleaseMat:!public! !

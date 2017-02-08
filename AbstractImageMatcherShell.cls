@@ -17,7 +17,9 @@ bestMatch
 	matcher bestMatchFor: matchImage in: sourceImage.
 	self confidence: matcher bestMatchConfidence.
 	matcher goodMatch ifNil: [^Sound errorBeep].
-	self drawRectangle: matcher goodMatch value with: Pen red!
+	matcher matches do:[: each | 
+		self drawRectangle: each value with: Pen red].
+	self drawRectangle: matcher goodMatch value with: Pen green!
 
 clearMatches
 	(sourceImagePresenter view)

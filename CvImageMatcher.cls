@@ -55,13 +55,12 @@ match: matchImage in: sourceImage rect: rect scale: scale
 	10 timesRepeat: 
 			[maxPos := correlation maxValueAndPosition.
 			bestCoeff := self coefficientFor: maxPos key.
+bestCoeff<self class goodMatchThreshold ifTrue: [^matches].
 			bestRect := ((maxPos value extent: match extent) scaleBy: 1 / scale) translatedBy: rect position.
 			matches add: bestCoeff -> bestRect rounded.
-			^matches.
 			OpenCVCoreLibrary default
-				cvRectangle: correlation asCvMat
-				pt1: maxPos value asCvPoint
-				pt2: (maxPos value+match extent) asCvPoint
+				cvRectangleR: correlation
+				rect: (CvRect fromRectangle: (maxPos value extent: match extent))
 				color: (CvScalar with: 0)
 				thickness: 4
 				lineType: 8
@@ -107,7 +106,7 @@ bestMatchReSearchBoundary
 	^5!
 
 goodMatchThreshold
-	^600!
+	^700!
 
 trialMatchScale
 	^0.5! !
