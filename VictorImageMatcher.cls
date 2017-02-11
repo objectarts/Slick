@@ -19,12 +19,29 @@ bestMatchConfidence
 goodMatch
 	^self matches first key > self class defaultGoodMatchThreshold ifTrue: [self bestMatch]!
 
-match: matchImage in: sourceImage rect: rect scale: scale
-	| rectSourceImage source match correlation count matches |
+matches
+	^matches!
 
+matches: matchImage in: sourceImage
+	| rect |
+	rect := sourceImage rectangle.
+	matches := self
+				matches: matchImage
+				in: sourceImage
+				rect: rect
+				scale: self scale.
+	rect := matches first value expandedBy: self class trialMatchValidateInflateBoundary.
+	matches := self
+				matches: matchImage
+				in: sourceImage
+				rect: rect
+				scale: 1.
+	^matches first key > self class defaultGoodMatchThreshold ifTrue: [matches first value]!
+
+matches: matchImage in: sourceImage rect: rect scale: scale
+	| rectSourceImage source match correlation count matches |
 	rectSourceImage := sourceImage copyRect: rect.
 	source := rectSourceImage scaleBy: scale.
-
 	match := matchImage scaleBy: scale.
 	correlation := source copyEmpty.
 	VicStatsLibrary default
@@ -40,34 +57,15 @@ match: matchImage in: sourceImage rect: rect scale: scale
 	^(matches asArray first: 10) collect: 
 			[:each |
 			| r |
-			r := (Rectangle origin: each x @ each y extent: match extent) scaleBy: 1/scale.
+			r := (Rectangle origin: each x @ each y extent: match extent) scaleBy: 1 / scale.
 			r := r translatedBy: rect position.
-			each val ->r rounded]!
-
-matches
-	^matches!
-
-matches: matchImage in: sourceImage
-	| rect |
-	rect := sourceImage rectangle.
-	matches := self
-				match: matchImage
-				in: sourceImage
-				rect: rect
-				scale: self scale.
-	rect := matches first value expandedBy: self class trialMatchValidateInflateBoundary.
-	matches := self
-				match: matchImage
-				in: sourceImage
-				rect: rect
-				scale: 1.
-	^matches first key > self class defaultGoodMatchThreshold ifTrue: [matches first value]! !
+			each val -> r rounded]! !
 !VictorImageMatcher categoriesFor: #bestMatch!accessing!public! !
 !VictorImageMatcher categoriesFor: #bestMatchConfidence!accessing!public! !
 !VictorImageMatcher categoriesFor: #goodMatch!public! !
-!VictorImageMatcher categoriesFor: #match:in:rect:scale:!commands!operations!private! !
 !VictorImageMatcher categoriesFor: #matches!accessing!public! !
 !VictorImageMatcher categoriesFor: #matches:in:!operations!public! !
+!VictorImageMatcher categoriesFor: #matches:in:rect:scale:!commands!operations!private! !
 
 !VictorImageMatcher class methodsFor!
 

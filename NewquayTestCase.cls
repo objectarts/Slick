@@ -14,6 +14,9 @@ isLoggedIn
 	^(self find: #NewquayLogo) notNil!
 
 newquayLogin: email password: password
+"
+	self grabPngSymbolToClipboard.
+"
 	self wait: #NewquayLandingPageTitle.
 	self click: #LoginButton.
 	self click: #UseAnotherAccountButton.
@@ -52,7 +55,63 @@ testNewquay
 
 	self newquayLoginSystemAdministrator!
 
+testNewquay10
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
 testNewquay2
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay3
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay4
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay5
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay6
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay7
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay8
+	"
+	self grabPngSymbolToClipboard.
+	"
+
+	self newquayLoginSystemAdministrator!
+
+testNewquay9
 	"
 	self grabPngSymbolToClipboard.
 	"
@@ -66,5 +125,13 @@ testNewquay2
 !NewquayTestCase categoriesFor: #setUp!private! !
 !NewquayTestCase categoriesFor: #tearDown!private! !
 !NewquayTestCase categoriesFor: #testNewquay!public! !
+!NewquayTestCase categoriesFor: #testNewquay10!public! !
 !NewquayTestCase categoriesFor: #testNewquay2!public! !
+!NewquayTestCase categoriesFor: #testNewquay3!public! !
+!NewquayTestCase categoriesFor: #testNewquay4!public! !
+!NewquayTestCase categoriesFor: #testNewquay5!public! !
+!NewquayTestCase categoriesFor: #testNewquay6!public! !
+!NewquayTestCase categoriesFor: #testNewquay7!public! !
+!NewquayTestCase categoriesFor: #testNewquay8!public! !
+!NewquayTestCase categoriesFor: #testNewquay9!public! !
 

@@ -94,8 +94,16 @@ openUrl: aString
 	ShellLibrary default shellOpen: aString.
 	self autoIt processWait: 'explorer.exe'!
 
+setUp
+	super setUp.
+	UserLibrary default blockInput: true.!
+
 setWindowSize: anXY
 	self activeWindow extent: anXY!
+
+tearDown	
+	UserLibrary default blockInput: false.
+	super tearDown.!
 
 type: aString
 	self autoIt send: aString!
@@ -132,7 +140,9 @@ waitActiveTitle: aString
 !RecorderTestCase categoriesFor: #imageMatcherClass!private! !
 !RecorderTestCase categoriesFor: #loadImage:!private! !
 !RecorderTestCase categoriesFor: #openUrl:!public! !
+!RecorderTestCase categoriesFor: #setUp!private! !
 !RecorderTestCase categoriesFor: #setWindowSize:!public! !
+!RecorderTestCase categoriesFor: #tearDown!private! !
 !RecorderTestCase categoriesFor: #type:!public! !
 !RecorderTestCase categoriesFor: #wait:!public! !
 !RecorderTestCase categoriesFor: #wait:timeout:!public! !
@@ -153,7 +163,7 @@ getFilenameForImage
 	^(FileSaveDialog new)
 				on: 'img' , (Timestamp current asFilenameString copyWithout: $-);
 				fileTypes: #(#('Png Files (*.png)' '*.png') #('All Files' '*.*'));
-				showModal ifNotNil: [:filename | File splitFilenameFrom: filename]!
+				showModal ifNotNil: [:filename | File splitStemFrom: filename]!
 
 grabPngSymbolToClipboard
 	"
