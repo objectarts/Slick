@@ -8,3 +8,13 @@ POINTL subclass: #CvSize
 CvSize guid: (GUID fromString: '{DECB11E6-88D5-422C-8D58-DCF096A7E8FF}')!
 CvSize comment: ''!
 !CvSize categoriesForClass!Win32-Structs! !
+!CvSize class methodsFor!
+
+defineFields
+	"
+	self compileDefinition
+	"
+
+	super defineFields! !
+!CvSize class categoriesFor: #defineFields!**auto generated**!initializing!public! !
+

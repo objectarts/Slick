@@ -40,8 +40,12 @@ asBitmap
 				usage: DIB_RGB_COLORS.
 	^Bitmap fromOwnedHandle: h!
 
-basicFree	
-	OpenCVCoreLibrary default cvReleaseMat: self.!
+basicFree
+	| ret |
+	ret := (OpenCVCoreLibrary default)
+				cvReleaseMat: self;
+				cvGetErrStatus.
+	ret = 0 ifFalse: [self error: (OpenCVCoreLibrary default cvErrorStr: ret)]!
 
 channels
 	^(self type bitShift: CV_CN_SHIFT negated)+1
@@ -100,12 +104,23 @@ depthDesc
 extent
 	^self cols @ self rows!
 
+hdrRefCount
+	"Answer the receiver's hdrRefCount field as a Smalltalk object."
+
+	^bytes sdwordAtOffset: ##(self offsetOf: #hdrRefCount)!
+
+hdrRefCount: anObject
+	"Set the receiver's hdrRefCount field to the value of anObject."
+
+	bytes sdwordAtOffset: ##(self offsetOf: #hdrRefCount) put: anObject!
+
 initialize
 	"Private - Initialize the receiver (common to internal [value] and
 	external [reference] buffers.
 	These objects are finalizable since they may reference owned external
 	resources."
 
+	super initialize.
 	self beFinalizable!
 
 isValid
@@ -137,7 +152,8 @@ needsFree
 	^true!
 
 onStartup
-	self beUnfinalizable !
+	self beUnfinalizable.
+!
 
 rectangle
 	^(0 @ 0) extent: (self cols @ self rows)!
@@ -210,6 +226,8 @@ typeDesc
 !CvMat categoriesFor: #depth!accessing!public! !
 !CvMat categoriesFor: #depthDesc!public! !
 !CvMat categoriesFor: #extent!accessing!public! !
+!CvMat categoriesFor: #hdrRefCount!**compiled accessors**!public! !
+!CvMat categoriesFor: #hdrRefCount:!**compiled accessors**!public! !
 !CvMat categoriesFor: #initialize!initializing!private! !
 !CvMat categoriesFor: #isValid!public!testing! !
 !CvMat categoriesFor: #matchTemplate:!operations!public! !
@@ -225,7 +243,7 @@ typeDesc
 !CvMat categoriesFor: #scaleBy:!public! !
 !CvMat categoriesFor: #show!operations!public! !
 !CvMat categoriesFor: #signature!accessing!public! !
-!CvMat categoriesFor: #step!**compiled accessors**!accessing!public! !
+!CvMat categoriesFor: #step!**compiled accessors**!public! !
 !CvMat categoriesFor: #step:!**compiled accessors**!public! !
 !CvMat categoriesFor: #type!accessing!public! !
 !CvMat categoriesFor: #typeDesc!accessing!public! !
@@ -242,12 +260,13 @@ defineFields
 		defineField: #_type type: SDWORDField new;
 		defineField: #step type: SDWORDField new;
 		defineField: #refcount type: (PointerField type: SDWORD);
-		defineField: #data type: LPVOIDField new offset: 16;
+		defineField: #hdrRefCount type: SDWORDField new;
+		defineField: #data type: LPVOIDField new;
 		defineField: #rows type: SDWORDField new;
 		defineField: #cols type: SDWORDField new!
 
 fromBitmap: aBitmap
-	^self fromCanvas: aBitmap canvas rect: (Point zero extent: aBitmap extent)!
+	^self fromCanvas1: aBitmap canvas rect: (Point zero extent: aBitmap extent)!
 
 fromCanvas: aCanvas rect: aRectangle
 	| mat bitmapinfo bitmap |
@@ -259,6 +278,7 @@ fromCanvas: aCanvas rect: aRectangle
 		rop: SRCCOPY.
 	bitmapinfo := BITMAPINFOHEADER new.
 	bitmapinfo
+		dwSize: BITMAPINFOHEADER basicByteSize;
 		biWidth: aRectangle width;
 		biHeight: aRectangle height negated;
 		biPlanes: 1;
@@ -274,8 +294,77 @@ fromCanvas: aCanvas rect: aRectangle
 		uUsage: DIB_RGB_COLORS.
 	^mat!
 
+fromCanvas1: aCanvas rect: aRectangle
+	| mat bitmapinfo bitmap data ret byteSize width height |
+	bitmap := Bitmap displayCompatibleWithExtent: aRectangle extent.
+	bitmap canvas
+		bitBlt: aCanvas
+		rectangle: aRectangle
+		to: Point zero
+		rop: SRCCOPY.
+
+	width := aRectangle width.
+	height := aRectangle height.
+	byteSize := 4 * width * height.
+	bitmapinfo := BITMAPINFO new.
+	(bitmapinfo bmiHeader)
+		biWidth: width ;
+		biHeight: -1 * height;
+		biPlanes: 1;
+		biBitCount: 32;
+		biCompression: BI_RGB;
+		biSizeImage: byteSize.
+
+	mat := self withExtent: aRectangle extent type: CV_8UC4.
+	data := mat data.
+	ret := GDILibrary default
+				getDIBits: bitmap canvas handle
+				hbm: bitmap handle
+				uStartScan: 0
+				cScanLines:  height
+				lpvBits: data
+				lpbi: bitmapinfo
+				uUsage: DIB_RGB_COLORS.
+	ret isZero ifTrue: [Win32Error signal].
+	^mat!
+
+fromDC: hdc rect: aRectangle
+	| matBitmap hBitmap hdcSys hdcMem bi bih width height ptrBitmapPixels |
+	hdcSys := UserLibrary default getDC.
+	hdcMem := GDILibrary default createCompatibleDC: hdcSys.
+	width := aRectangle width.
+	height := aRectangle height.
+
+self halt.
+	hBitmap := GDILibrary default
+				createCompatibleBitmap: hdc
+				nWidth: width
+				nHeight: height.
+	bih := BITMAPINFOHEADER new.
+	bih
+		dwSize: BITMAPFILEHEADER basicSize;
+		biWidth: width;
+		biHeight: height negated;
+		biPlanes: 1;
+		biBitCount: 32.
+	bi := BITMAPINFO new.
+	bi bmiHeader: bih.
+self halt.
+	matBitmap := self withExtent: aRectangle extent type: CV_8UC4.
+	ptrBitmapPixels := ExternalAddress  fromAddress: matBitmap data.
+	hBitmap := GDILibrary default
+				createDIBSection: hdc
+				pbmi: bi
+				iUsage: DIB_RGB_COLORS
+				ppvBits: ptrBitmapPixels
+				hSection: nil
+				dwOffset: 0.
+	GDILibrary default selectObject: hdcMem hgdiobj: hBitmap.
+	GDILibrary default bitBlt: hdcMem nXDest: 0 nYDest: 0 nWidth: width nHeight: height hdcSrc: hdcSys nXSrc: 0 nYSrc: 0 dwRop: SRCCOPY.
+	^matBitmap!
+
 fromDesktop
-	^self fromCanvas: View desktop canvas rect: (Point zero extent: View desktop extent)!
+	^self fromCanvas1: View desktop canvas rect: (Point zero extent: View desktop extent)!
 
 initialize
 	"Private - 
@@ -305,6 +394,8 @@ withExtent: extent type: type
 !CvMat class categoriesFor: #defineFields!initializing!public! !
 !CvMat class categoriesFor: #fromBitmap:!initializing!instance creation!public! !
 !CvMat class categoriesFor: #fromCanvas:rect:!initializing!instance creation!public! !
+!CvMat class categoriesFor: #fromCanvas1:rect:!initializing!instance creation!public! !
+!CvMat class categoriesFor: #fromDC:rect:!initializing!instance creation!public! !
 !CvMat class categoriesFor: #fromDesktop!initializing!instance creation!public! !
 !CvMat class categoriesFor: #initialize!private! !
 !CvMat class categoriesFor: #loadImage:!instance creation!public! !

@@ -12,6 +12,7 @@ package classNames
 	add: #PNGTRANSINFO;
 	add: #Vic32Library;
 	add: #VicStatsLibrary;
+	add: #VictorImageMatcher;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -29,6 +30,11 @@ package!
 
 "Class Definitions"!
 
+Object subclass: #VictorImageMatcher
+	instanceVariableNames: 'scale matches'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 ExternalLibrary subclass: #Vic32Library
 	instanceVariableNames: ''
 	classVariableNames: ''

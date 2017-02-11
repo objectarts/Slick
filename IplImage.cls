@@ -178,6 +178,9 @@ roi: anObject
 
 	bytes uintPtrAtOffset: ##(self offsetOf: #roi) put: anObject!
 
+show
+	OpenCVHighGuiLibrary default cvShowImage: '' image: self!
+
 size
 	"Answer the receiver's size field as a Smalltalk object."
 
@@ -237,6 +240,7 @@ widthStep: anObject
 !IplImage categoriesFor: #origin:!**compiled accessors**!public! !
 !IplImage categoriesFor: #roi!**compiled accessors**!public! !
 !IplImage categoriesFor: #roi:!**compiled accessors**!public! !
+!IplImage categoriesFor: #show!public! !
 !IplImage categoriesFor: #size!**compiled accessors**!public! !
 !IplImage categoriesFor: #size:!**compiled accessors**!public! !
 !IplImage categoriesFor: #width!**compiled accessors**!public! !

@@ -49,25 +49,29 @@ closeBrowserTab
 	!
 
 defaultMatchScale
-	^0.5!
+	^1!
 
 defaultTimeout
 	^5000!
 
 find: anImage
-	| sourceImage matchImage timeoutTime |
+	| sourceImage matchImage |
 	sourceImage := self activeWindowImage.
 	matchImage := self loadImage: anImage.
 	(self find: matchImage in: sourceImage) ifNotNil: [:match | ^match].
+	matchImage free.
 	SessionManager inputState pumpMessages.
 	^nil!
 
 find: matchImage in: sourceImage
 	| ms result |
 	ms := Time millisecondsToRun: 
-					[result := (self imageMatcherClass new)
-								scale: self defaultMatchScale;
-								goodMatchFor: matchImage in: sourceImage].
+					[| matcher |
+					matcher := (self imageMatcherClass new)
+								trialMatchScale: self defaultMatchScale;
+								matches: matchImage in: sourceImage;
+								yourself.
+					result := matcher bestMatch].
 	^result!
 
 grabScreenImageInRect: aRectangle
@@ -138,6 +142,7 @@ waitActiveTitle: aString
 
 fullPathForImage: aFilenameString
 	| filename |
+	
 	filename := File
 				composePath: 'images'
 				stem: aFilenameString asString
@@ -145,10 +150,10 @@ fullPathForImage: aFilenameString
 	^(PackageRelativeFileLocator package: self class owningPackage) localFileSpecFor: filename!
 
 getFilenameForImage
-	^Prompter
-		on: 'img' , (Timestamp current asFilenameString copyWithout: $-)
-		prompt: 'Image name:'
-		caption: 'Enter a name for this image'!
+	^(FileSaveDialog new)
+				on: 'img' , (Timestamp current asFilenameString copyWithout: $-);
+				fileTypes: #(#('Png Files (*.png)' '*.png') #('All Files' '*.*'));
+				showModal ifNotNil: [:filename | File splitFilenameFrom: filename]!
 
 grabPngSymbolToClipboard
 	"

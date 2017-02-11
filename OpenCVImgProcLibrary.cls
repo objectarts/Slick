@@ -10,6 +10,14 @@ OpenCVImgProcLibrary comment: ''!
 !OpenCVImgProcLibrary categoriesForClass!External-Libraries! !
 !OpenCVImgProcLibrary methodsFor!
 
+cvFloodFill: img seedPt: seedPt newVal: newVal loDiff: loDiff upDiff: upDiff comp: comp flags: flags mask: mask
+	"void cvFloodFill(CvArr * image, CvPoint seed_point, CvScalar new_val, 
+		CvScalar lo_diff = cvScalarAll(0), CvScalar up_diff = cvScalarAll(0), 
+		CvConnectedComp * comp = NULL, int flags= 4, CvArr * mask = NULL )"
+
+	<cdecl: void cvFloodFill CvMat* POINTL CvScalar CvScalar CvScalar sdword CvMat* sdword>
+	^self invalidCall!
+
 cvMatchTemplate: image image: template result: result method: method
 	"void cvMatchTemplate(const CvArr* image, const CvArr* templ, CvArr* result, int method)"
 
@@ -27,6 +35,7 @@ cvShowImage: name image: image
 
 	<cdecl: void cvShowImage lpstr IplImage*>
 	^self invalidCall! !
+!OpenCVImgProcLibrary categoriesFor: #cvFloodFill:seedPt:newVal:loDiff:upDiff:comp:flags:mask:!public! !
 !OpenCVImgProcLibrary categoriesFor: #cvMatchTemplate:image:result:method:!public! !
 !OpenCVImgProcLibrary categoriesFor: #cvResize:dst:interpolation:!public! !
 !OpenCVImgProcLibrary categoriesFor: #cvShowImage:image:!public! !

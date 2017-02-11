@@ -13,13 +13,12 @@ AbstractImageMatcherShell comment: ''!
 bestMatch
 	| matcher |
 	matcher := self imageMatcherClass new.
-	matcher scale: self scale.
-	matcher bestMatchFor: matchImage in: sourceImage.
+	matcher trialMatchScale: self scale.
+	matcher matches: matchImage in: sourceImage.
+	matcher matches do: [:each | self drawRectangle: each value with: Pen red].
+	matcher bestMatch ifNotNil: [:best | self drawRectangle: best value with: Pen green].
 	self confidence: matcher bestMatchConfidence.
-	matcher goodMatch ifNil: [^Sound errorBeep].
-	matcher matches do:[: each | 
-		self drawRectangle: each value with: Pen red].
-	self drawRectangle: matcher goodMatch value with: Pen green!
+	matcher matches isEmpty ifTrue: [Sound errorBeep]!
 
 clearMatches
 	(sourceImagePresenter view)
@@ -64,12 +63,12 @@ loadSourceImage
 	self setSourceImage: self loadImage!
 
 match
+	self clearMatches.
 	self grabScreenImage
 		ifNotNil: 
 			[:img |
 			| ms |
 			self setMatchImage: img.
-			self clearMatches.
 			ms := Time millisecondsToRun: [self bestMatch].
 			self matchTime: ms]!
 
@@ -78,7 +77,7 @@ matchTime: aNumber
 
 onViewOpened
 	super onViewOpened.
-	self scale: self imageMatcherClass trialMatchScale!
+	self scale: self imageMatcherClass defaultTrialMatchScale!
 
 scale
 	^scalePresenter value / 100!
@@ -95,6 +94,7 @@ setSourceImage: anImageOrNil
 	sourceImagePresenter value: (sourceImage ifNotNil: [:img | img asBitmap])!
 
 source
+	self clearMatches.
 	self grabScreenImage ifNotNil: [:img | self setSourceImage: img]! !
 !AbstractImageMatcherShell categoriesFor: #bestMatch!commands!public! !
 !AbstractImageMatcherShell categoriesFor: #clearMatches!commands!public! !

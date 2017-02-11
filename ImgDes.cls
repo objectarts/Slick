@@ -275,7 +275,16 @@ defineFields
 
 !
 
-loadpng: aFilename
+fromBitmap: aBitmap
+	| img |
+	img := ImgDes new.
+	Vic32Library default
+		ddbtoimage: aBitmap asParameter asParameter
+		hPal: 0
+		imgdes: img.
+	^img!
+
+loadImage: aFilename
 	^Vic32Library default loadpng: aFilename!
 
 width: w height: h pixelDepth: d
@@ -289,6 +298,7 @@ width: w height: h pixelDepth: d
 	err = 0 ifFalse: [self error: 'Unable to allocate image'].
 	^newOne! !
 !ImgDes class categoriesFor: #defineFields!**auto generated**!initializing!public! !
-!ImgDes class categoriesFor: #loadpng:!public! !
+!ImgDes class categoriesFor: #fromBitmap:!public! !
+!ImgDes class categoriesFor: #loadImage:!public! !
 !ImgDes class categoriesFor: #width:height:pixelDepth:!instance creation!public! !
 

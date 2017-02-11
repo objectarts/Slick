@@ -20,7 +20,7 @@ fileName
 	| basicName |
 	basicName := self rootFileName , self cvVersion displayString.
 	^(SessionManager current getenv: 'OPENCV_DIR')
-		ifNotNil: [:cvDir | cvDir , '\x86\vc14\bin\' , basicName , 'd']
+		ifNotNil: [:cvDir | cvDir , '\x86\vc14\bin\' , basicName]
 		ifNil: [basicName]!
 
 rootFileName

@@ -30,6 +30,6 @@ fileName
 	"Answer the host system file name of the external library which
 	the receiver represents."
 
-	^(PackageRelativeFileLocator package: self owningPackage) localFileSpecFor: 'VicStats'! !
+	^'VicStats'! !
 !VicStatsLibrary class categoriesFor: #fileName!constants!public! !
 

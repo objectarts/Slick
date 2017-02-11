@@ -1,0 +1,37 @@
+| package |
+package := Package name: 'Foundation'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #FoundationTestCase;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: (IdentitySet new
+	add: 'Slick';
+	yourself).
+
+package!
+
+"Class Definitions"!
+
+RecorderTestCase subclass: #FoundationTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+"End of package definition"!
+

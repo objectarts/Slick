@@ -1,0 +1,38 @@
+| package |
+package := Package name: 'Newquay'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #NewquayTestCase;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: (IdentitySet new
+	add: '..\..\Core\Object Arts\Dolphin\Base\Dolphin';
+	add: 'Slick';
+	yourself).
+
+package!
+
+"Class Definitions"!
+
+RecorderTestCase subclass: #NewquayTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+"End of package definition"!
+

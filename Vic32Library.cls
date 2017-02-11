@@ -112,6 +112,6 @@ fileName
 	"Answer the host system file name of the external library which
 	the receiver represents."
 
-	^(PackageRelativeFileLocator package: self owningPackage) localFileSpecFor: 'Vic32'! !
+	^'Vic32'! !
 !Vic32Library class categoriesFor: #fileName!constants!public! !
 
